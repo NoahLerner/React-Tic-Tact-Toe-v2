@@ -3,37 +3,62 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 
+// Square is a function component
+// useful when the component just needs to render something
+function Square(props){
+  return (
+    <button
+      className="square"
+      onClick={props.onClick}
+    >
+      {props.value}
+    </button>
+  );
+}
+  
+class Board extends React.Component {
 
-class Square extends React.Component {
     constructor(props){
       super(props);
       this.state = {
-        value: null,
-      }
+        squares: Array(9).fill(null),
+        isXNext: true,
+      };
     }
 
-    render() {
-      return (
-        <button 
-          className="square" 
-          onClick={ 
-            ()=> this.state.value == 'X' ? this.setState({value: 'O'}) : this.setState({value: 'X'}) 
-          }
-        >
-          {this.state.value}
-        </button>
-      );
+    handleClick(i){
+      const squares = this.state.squares.slice();
+
+      // if there is already a winner, or the square is filled then ignore the click
+      if(calculateWinner(squares) || squares[i]){
+        return;
+      }
+
+      squares[i] = this.state.isXNext ? 'X' : 'O';
+      this.setState({
+        squares: squares,
+        isXNext: !this.state.isXNext
+      });
     }
-  }
-  
-class Board extends React.Component {
+
     renderSquare(i) {
-      return <Square value={i}/>;
+      return <Square 
+        value={this.state.squares[i]}
+        onClick={
+          () => this.handleClick(i)
+        }
+      />;
     }
   
     render() {
-      const status = 'Next player: X';
-  
+      const winner = calculateWinner(this.state.squares);
+      let status;
+      if(winner){
+        status = 'Winner: ' + winner;
+      } else {
+        status = 'Next player: ' + (this.state.isXNext ? 'X' : 'O');
+      }
+
       return (
         <div>
           <div className="status">{status}</div>
@@ -80,3 +105,23 @@ class Game extends React.Component {
     document.getElementById('root')
   );
   
+
+  function calculateWinner(squares) {
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return squares[a];
+      }
+    }
+    return null;
+  }
