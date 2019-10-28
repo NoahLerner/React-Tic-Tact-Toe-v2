@@ -82,13 +82,8 @@ class Game extends React.Component {
     });
   }
 
-  render() {
-
-    const history = this.state.history;
-    const current = history[history.length - 1];
-    const winner = calculateWinner(current.squares);
-
-    const moves = history.map((step, move) => {
+  getHistoricalMoves(history){
+    return history.map((step, move) => {
       const desc = move ?
         'Go to move #' + move :
         'Go to game start';
@@ -101,6 +96,15 @@ class Game extends React.Component {
         </li>
       );
     });
+  }
+
+  render() {
+
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const winner = calculateWinner(current.squares);
+
+    const moves = this.getHistoricalMoves(history);
 
     let status;
     if(winner){
