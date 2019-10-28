@@ -56,6 +56,8 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+        location: null,
+        player: null,
       }],
       isXNext: true,
       stepNumber: 0,
@@ -78,9 +80,11 @@ class Game extends React.Component {
     this.setState({
       history: history.concat([{
         squares: squares,
+        location: i,
+        player: squares[i],
       }]),
       isXNext: !this.state.isXNext,
-      stepNumber: history.length,
+      stepNumber: this.state.stepNumber + 1,
     });
   }
 
@@ -99,12 +103,19 @@ class Game extends React.Component {
         'Go to move #' + move :
         'Go to game start';
       
+      const location = move ?
+        history[move].player + ' @ location: ' + getRow(history[move].location) + ', ' + getCol(history[move].location):
+        '';
+
       // returns a list item with button
       return (
         <li key={move}>
           <button onClick = {() => this.jumpTo(move)}>
             {desc}
           </button>
+          <label>
+            {"  " + location}
+          </label>
         </li>
       );
     });
@@ -168,4 +179,32 @@ class Game extends React.Component {
       }
     }
     return null;
+  }
+
+  function getRow(i){
+
+    const row1 = [0, 1, 2];
+    const row2 = [3, 4, 5];
+    //const row3 = [6, 7, 8];
+
+    const row = row1.includes(i) ?
+                  1:
+                  (row2.includes(i) ? 
+                    2:
+                    3);
+    return row;
+  }
+
+  function getCol(i){
+    
+    const col1 = [0, 3, 6];
+    const col2 = [1, 4, 7];
+    //const col3 = [2, 5, 8];
+
+    const col = col1.includes(i) ?
+                  1:
+                  (col2.includes(i) ? 
+                    2:
+                    3);
+    return col;
   }
