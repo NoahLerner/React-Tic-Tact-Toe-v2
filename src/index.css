@@ -6,6 +6,16 @@ body {
   ol, ul {
     padding-left: 30px;
   }
+
+  .moveButton {
+    border-radius: 0px;
+    box-shadow: 0 0 0 0;
+  }
+
+  .moveButton:hover{
+    cursor: pointer;
+    font-weight: bold;
+  }
   
   .board-row:after {
     clear: both;
