@@ -61,6 +61,7 @@ class Game extends React.Component {
       }],
       isXNext: true,
       stepNumber: 0,
+      order: 'asc',
     }
   }
 
@@ -127,7 +128,8 @@ class Game extends React.Component {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
-    const moves = this.getHistoricalMoves(history);
+    const movesAsc = this.getHistoricalMoves(history);
+    const moves = this.state.order == 'asc' ? movesAsc : movesAsc.slice().reverse(); 
 
     let status;
     if(winner){
@@ -146,6 +148,16 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
+          <button 
+            className="orderToggle"
+            onClick={
+              () => this.setState({
+                order: this.state.order == 'asc' ? 'desc' : 'asc',
+              })
+            }
+          >
+            {this.state.order}
+          </button>
           <ol>{moves}</ol>
         </div>
       </div>
