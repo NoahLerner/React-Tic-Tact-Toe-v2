@@ -19,6 +19,7 @@ function Square(props){
 class Board extends React.Component {
   renderSquare(i) {
     return <Square 
+      key={"square-" + i}
       isWinner={
         this.props.winningSquares && this.props.winningSquares.includes(i) ? true : false
       }
@@ -40,7 +41,7 @@ class Board extends React.Component {
     for (let i = 0; i < 3; i++) {
       let group = i * 3;
       boardRows[i] = (
-        <div className="board-row">
+        <div className="board-row" key={'board-row-' + i}>
           {squares.slice(group, group + 3)}
         </div>
       );
@@ -134,13 +135,17 @@ class Game extends React.Component {
     const winningSquares = winObj ? winObj.winningSquares : null;
 
     const movesAsc = this.getHistoricalMoves(history);
-    const moves = this.state.order == 'asc' ? movesAsc : movesAsc.slice().reverse(); 
+    const moves = this.state.order === 'asc' ? movesAsc : movesAsc.slice().reverse(); 
 
     let status;
     if(winner){
       status = 'Winner: ' + winner;
     } else {
       status = 'Next player: ' + (this.state.isXNext ? 'X' : 'O');
+    }
+
+    if(isBoardFull(current.squares) && !winner){
+      status = "The game was a draw";
     }
 
     return (
@@ -153,12 +158,12 @@ class Game extends React.Component {
           />
         </div>
         <div className="game-info">
-          <div>{status}</div>
+          <div className="game-status">{status}</div>
           <button 
             className="orderToggle"
             onClick={
               () => this.setState({
-                order: this.state.order == 'asc' ? 'desc' : 'asc',
+                order: this.state.order === 'asc' ? 'desc' : 'asc',
               })
             }
           >
@@ -228,4 +233,8 @@ class Game extends React.Component {
                     2:
                     3);
     return col;
+  }
+
+  function isBoardFull(squares) {
+    return !squares.includes(null);
   }
